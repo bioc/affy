@@ -57,7 +57,7 @@ The {\it cdfenvs} are associative data structures to map efficiently a
 {\it probeset id} with indices for the corresponding probes. These
 indices are used to subset a matrix storing probe level
 intensities. Technically, a {\it cdfenv} is a {\bf R} \Robject{environment}.
-The functions \Rfunction{get} and \Rfunction{multiget} (in \Rpackage{Biobase})
+The functions \Rfunction{get} and \Rfunction{mget}
 are a convenient way to access what is in an environment.
 Expert users only will consider modifying what is those environment.
 
