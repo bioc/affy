@@ -35,12 +35,7 @@ setMethod("open", "ProgressBarText",
           })
 
 if ( ! isGeneric("update") )
-  setGeneric("update", function(object, ...) standardGeneric("update"),
-             useAsDefault = TRUE)
-
-## to avoid 'loosing' the default update.
-## (not sure this is the most elegant way to do this)
-
+  setGeneric("update", function(object, ...) standardGeneric("update"))
 
 setMethod("update", "ProgressBarText",
           function(object) {
