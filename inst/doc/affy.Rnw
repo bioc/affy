@@ -172,7 +172,7 @@ is publicly available from Gene Locic
 \url{http://qolotus02.genelogic.com/datasets.nsf/} and described in \cite{iriz:etal:2002}. The help file obtained via \verb+?Dilution+ describes the data set.
 Section \ref{s1.6} presents a case study using this Data.
 
-<<echo=F,results=hide>>=
+<<echo=FALSE,results=hide>>=
 library(affy)
 @
 
@@ -274,7 +274,7 @@ For replicates and cases where most genes are not differentially expressed,
 we want the cloud of points to be around 0 and the IQR to be small.
 \begin{figure}[htbp]
 \begin{center}
-<<echo=F>>=
+<<echo=FALSE>>=
 options(warn=-1) 
 @
 <<fig=TRUE>>=
@@ -391,8 +391,8 @@ the \verb+express+ function normalizes by default, so we need to avoid this
 using the \verb+normalize+ argument.
 
 <<results=hide>>=
-e <- express(normalized.Dilution,normalize=F)
-f <- express(Dilution,normalize=F)
+e <- express(normalized.Dilution,normalize=FALSE)
+f <- express(Dilution,normalize=FALSE)
 @
 
 To see if normalizing makes a difference, let's look at  
@@ -436,9 +436,9 @@ e <- express(Dilution) ##the default
 LiWong <- express(Dilution, bg=subtractmm, summary.stat=li.wong)
 ##to get AvDiff: background correct by subtracting mm
 ##and the predifined avdiff function
-Avdiff<-express(Dilution,normalize=F,bg=subtractmm,summary.stat=avdiff)
+Avdiff<-express(Dilution,normalize=FALSE,bg=subtractmm,summary.stat=avdiff)
 ##which is pretty similar to
-Avdiff2<-express(Dilution,normalize=F,bg=subtractmm,summary.stat=function(x) apply(x,2,mean,trim=.5))
+Avdiff2<-express(Dilution,normalize=FALSE,bg=subtractmm,summary.stat=function(x) apply(x,2,mean,trim=.5))
 
 ##which has higher correlation between reps
 assess <- function(w){
@@ -446,9 +446,9 @@ assess <- function(w){
         y <- exprs(w)[,2] 
         z <- exprs(w)[,3]        
         Index <- x>0 & y>0 
-        signif(c(IQR(log2(x[Index]/y[Index]),na.rm=T),
-                       IQR(log2(x[Index]/z[Index]),na.rm=T),
-                       IQR(log2(y[Index]/z[Index]),na.rm=T)),2)
+        signif(c(IQR(log2(x[Index]/y[Index]),na.rm=TRUE),
+                       IQR(log2(x[Index]/z[Index]),na.rm=TRUE),
+                       IQR(log2(y[Index]/z[Index]),na.rm=TRUE)),2)
         }
 @      
 <<>>=
