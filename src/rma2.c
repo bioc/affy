@@ -85,8 +85,6 @@
  ** Dec 9, 2003 - fix a bug in do_RMA (max_nrows in Calloc)
  ** Mar 6, 2004 - all mallocs/frees are now Calloc/Frees. Removed
  **               the function R_median_polish
- ** Jul 27, 2004 - fix a small memory leak
- ** Aug 4, 2004 - move the "Background correcting" message. 
  **
  ************************************************************************/
 
@@ -549,10 +547,6 @@ SEXP rma_c_call(SEXP PMmat, SEXP MMmat, SEXP ProbeNamesVec,SEXP N_probes,SEXP no
   SET_VECTOR_ELT(dimnames,0,names);
   setAttrib(outvec, R_DimNamesSymbol, dimnames);
   UNPROTECT(2);
-  for (i =0; i < nprobesets; i++)
-    Free(outnames[i]);
-  
-  Free(outnames);
   Free(ProbeNames);
   return outvec;
 }
@@ -580,7 +574,6 @@ SEXP rma_c_call(SEXP PMmat, SEXP MMmat, SEXP ProbeNamesVec,SEXP N_probes,SEXP no
 
 SEXP rma_c_complete(SEXP PMmat, SEXP MMmat, SEXP ProbeNamesVec,SEXP N_probes,SEXP densfunc, SEXP rho,SEXP norm_flag, SEXP bg_flag, SEXP bg_type){
   if (INTEGER(bg_flag)[0]){
-    Rprintf("Background correcting\n");
     PMmat = bg_correct_c(PMmat,MMmat,densfunc,rho,bg_type);
   }
   return rma_c_call(PMmat, MMmat, ProbeNamesVec,N_probes,norm_flag);
@@ -612,9 +605,8 @@ SEXP rma_c_complete_copy(SEXP PMmat, SEXP MMmat, SEXP ProbeNamesVec,SEXP N_probe
  int rows,cols;
 
  if (INTEGER(bg_flag)[0]){
-   Rprintf("Background correcting\n");
-   PMmat = bg_correct_c_copy(PMmat,MMmat,densfunc,rho, bg_type); 
-   return rma_c_call(PMmat, MMmat, ProbeNamesVec,N_probes,norm_flag);
+    PMmat = bg_correct_c_copy(PMmat,MMmat,densfunc,rho, bg_type); 
+    return rma_c_call(PMmat, MMmat, ProbeNamesVec,N_probes,norm_flag);
   } else {
     PROTECT(dim1 = getAttrib(PMmat,R_DimSymbol));
     rows = INTEGER(dim1)[0];

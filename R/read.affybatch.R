@@ -122,7 +122,7 @@ read.probematrix <- function(..., filenames = character(0), phenoData = new("phe
   cdfInfo<- as.list(getCdfInfo(Data))
   cdfInfo <- cdfInfo[order(names(cdfInfo))]
 
-
+  
   .Call("read_probeintensities", filenames,
         compress, rm.mask, rm.outliers, rm.extra, ref.cdfName,
         dim.intensity, verbose, cdfInfo,which, PACKAGE="affy")
@@ -132,79 +132,6 @@ read.probematrix <- function(..., filenames = character(0), phenoData = new("phe
 list.celfiles <-   function(...){
   files <- list.files(...)
   return(files[grep("\.[cC][eE][lL]\.gz$|\.[cC][eE][lL]$", files)])
-}
-
-AllButCelsForReadAffy <- function(..., filenames=character(0),
-                                  widget=getOption("BioC")$affy$use.widgets,
-                                  celfile.path=getwd(),
-                                  sampleNames=NULL,
-                                  phenoData=NULL,
-                                  description=NULL){
-
-    ##first figure out filenames
-  auxnames <- unlist(as.list(substitute(list(...)))[-1])
-
-  if (widget){
-    require(tkWidgets)
-    widgetfiles <- fileBrowser(textToShow="Choose CEL files",
-                               testFun=hasSuffix("[cC][eE][lL]"))
-  }
-  else{
-    widgetfiles <- character(0)
-  }
-
-  filenames <- .Primitive("c")(filenames, auxnames, widgetfiles)
-
-  if(length(filenames)==0) filenames <- list.celfiles(celfile.path,full.names=TRUE)
-
-  if(length(filenames)==0) stop("No cel filennames specified and no cel files in specified directory:",celfile.path,"\n")
-
-  if(is.null(sampleNames)){
-    sampleNames <- sub("^/?([^/]*/)*", "", filenames, extended=TRUE)
-  }
-  else{
-    if(length(sampleNames)!=length(filenames)){
-      warning("sampleNames not same length as filenames. Using filenames as sampleNames instead\n")
-      sampleNames <- sub("^/?([^/]*/)*", "", filenames, extended=TRUE)
-    }
-  }
-
-  if(is.character(phenoData)) ##if character read file
-    phenoData <- read.phenoData(filename=phenoData)
-  else{
-      if (! is(phenoData, "phenoData")) {
-          if(widget){
-              require(tkWidgets)
-              phenoData <- read.phenoData(sampleNames=sampleNames,widget=TRUE)
-          }
-          else
-              phenoData <- read.phenoData(sampleNames=sampleNames,widget=FALSE)
-      }
-  }
-
-  sampleNames <- rownames(pData(phenoData))
-
-  ##get MIAME information
-  if(is.character(description)){
-    description <- read.MIAME(filename=description,widget=FALSE)
-  }
-  else{
-      if (! is(description, "MIAME")) {
-          if(widget){
-              require(tkWidgets)
-              description <- read.MIAME(widget=TRUE)
-          }
-          else
-              description <- new("MIAME")
-      }
-  }
-
-  ##MIAME stuff
-  description@preprocessing$filenames <- filenames
-  if(exists("tksn")) description@samples$description <- tksn[,2]
-  description@preprocessing$affyversion <- library(help=affy)$info[[2]][[2]][2]
-
-  return(list(filenames=filenames,phenoData=phenoData,sampleNames=sampleNames))
 }
 
 ###this is user friendly wrapper for read.affybatch
@@ -219,27 +146,92 @@ ReadAffy <- function(..., filenames=character(0),
                      rm.mask=FALSE, rm.outliers=FALSE, rm.extra=FALSE,
                      verbose=FALSE) {
 
-  l <- AllButCelsForReadAffy(..., filenames=filenames,
-                             widget=widget,
-                             celfile.path=celfile.path,
-                             sampleNames=sampleNames,
-                             phenoData=phenoData,
-                             description=description)
+  ##first figure out filenames
+  auxnames <- unlist(as.list(substitute(list(...)))[-1])
+
+  if (widget){
+    require(tkWidgets)
+    widgetfiles <- fileBrowser(textToShow="Choose CEL files",
+                               testFun=hasSuffix("[cC][eE][lL]"))
+  }
+  else
+    widgetfiles <- character(0)
+
+  filenames <- .Primitive("c")(filenames, auxnames, widgetfiles)
+
+  if(length(filenames)==0) filenames <- list.celfiles(celfile.path,full.names=TRUE)
+
+  if(length(filenames)==0) stop("No cel filennames specified and no cel files in specified directory:",celfile.path,"\n")
+
+
+  ##now assign sampleNames if phenoData not given
+  if(is.null(phenoData)){
+    if(is.null(sampleNames)){
+      if(widget){
+        require(tkWidgets)
+        tksn <- tkSampleNames(filenames=filenames)
+        sampleNames <- tksn[,1]
+        ##notice that a description of the files is ingored for now
+        ##soon to go into MIAME
+      }
+      else{
+        sampleNames <- sub("^/?([^/]*/)*", "", filenames, extended=TRUE)
+      }
+    }
+    else{
+      if(length(sampleNames)!=length(filenames)){
+        warning("sampleNames not same length as filenames. Using filenames as sampleNames instead\n")
+        sampleNames <- sub("^/?([^/]*/)*", "", filenames, extended=TRUE)
+      }
+    }
+  }
+
+  ##now get phenoData
+  if(is.character(phenoData)) ##if character read file
+    phenoData <- read.phenoData(filename=phenoData)
+  else{
+    if(class(phenoData)!="phenoData"){
+      if(widget){
+        require(tkWidgets)
+        phenoData <- read.phenoData(sampleNames=sampleNames,widget=TRUE)
+      }
+      else
+        phenoData <- read.phenoData(sampleNames=sampleNames,widget=FALSE)
+    }
+  }
+
+  ##get MIAME information
+  if(is.character(description)){
+    description <- read.MIAME(filename=description,widget=FALSE)
+  }
+  else{
+    if(class(description)!="MIAME"){
+      if(widget){
+        require(tkWidgets)
+        description <- read.MIAME(widget=TRUE)
+      }
+      else
+        description <- new("MIAME")
+    }
+  }
+
+  ##MIAME stuff
+  description@preprocessing$filenames <- filenames
+  if(exists("tksn")) description@samples$description <- tksn[,2]
+  description@preprocessing$affyversion <- library(help=affy)$info[[2]][[2]][2]
 
   ##and now we are ready to read cel files
-  ret <- read.affybatch(filenames=l$filenames,
-                        phenoData=l$phenoData,
-                        description=l$description,
+  return(read.affybatch(filenames=filenames,
+                        phenoData=phenoData,
+                        description=description,
                         notes=notes,
                         compress=compress,
                         rm.mask=rm.mask,
                         rm.outliers=rm.outliers,
                         rm.extra=rm.extra,
-                        verbose=verbose)
-
-  sampleNames(ret) <- l$sampleNames
-  return(ret)
+                        verbose=verbose))
 }
+
 
 
 

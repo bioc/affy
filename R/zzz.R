@@ -85,7 +85,7 @@
                    normalize.method = normalize.method,
                    pmcorrect.method = pmcorrect.method,
                    summary.method = summary.method,
-                   xy.offset = 0 ## this one is for temporary compatibility
+                   xy.offset = 1 ## this one is for temporary compatibility
                    ) 
 
   class(affy.opt) <- "BioCPkg"
@@ -101,14 +101,14 @@
 
   where <- match(paste("package:", pkgname, sep=""), search())
   all.affy <- ls(where)
- message <- TRUE
+ message <- FALSE
 
   if (message) {
     cat(rep("*",13),"\n",sep="")
     cat("affy: development version\n")
     cat(rep("*",13),"\n",sep="")
     cat(rep("*",13),"\n",sep="")
-    cat("update versions of the required packages if necessary.\n")
+    cat("IMPORTANT: you need the latest versions of the required packages too.\n")
     cat(rep("*",13),"\n",sep="")
   }
 
