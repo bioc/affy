@@ -33,7 +33,7 @@
          envir=as.environment(where))
 
   ##if (debug.affy123) cat("-->detecting expression value methods from naming convention\n")
-  assign("generateExprSet.methods", substr(ls(where)[grep("generateExprSet\.method\.*", ls(where))],
+  assign("generateExprSet.methods", substr(ls(where)[grep("generateExprVal\.method\.*", ls(where))],
                                            23,100),
          
          envir=as.environment(where))
