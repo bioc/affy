@@ -1,4 +1,4 @@
-generateExprVal.method.playerout <- function(probes, weights=F){
+generateExprVal.method.playerout <- function(probes, weights=FALSE){
   matos <- as.data.frame(lapply(probes,function(x){x$pm}))
   ##names(matos) <- mynames
   matos <- t(as.matrix(matos))

@@ -12,13 +12,13 @@ avdiff <- function(x,constant=3){
   c(e,rep(NA,length(e)))
 }
 
-li.wong <- function(data.matrix,remove.outliers=T,
+li.wong <- function(data.matrix,remove.outliers=TRUE,
                     normal.array.quantile=0.5,
                     normal.resid.quantile=0.9,
                     large.threshold=3,
                     large.variation=0.8,
                     outlier.fraction=0.14,
-                    delta = 1e-06,maxit=50,outer.maxit=50,verbose=F){
+                    delta = 1e-06,maxit=50,outer.maxit=50,verbose=FALSE){
 
   e <-  fit.li.wong(t(data.matrix),remove.outliers,normal.array.quantile,normal.resid.quantile,large.threshold,large.variation,outlier.fraction,delta,maxit,outer.maxit,verbose)
   c(e$theta,e$sigma.theta)
@@ -26,9 +26,9 @@ li.wong <- function(data.matrix,remove.outliers=T,
 
 
 medianpolish <- function(x,...){
-  tmp <- medpolish(log2(x),trace.iter=F,...)
+  tmp <- medpolish(log2(x),trace.iter=FALSE,...)
   ##rough estimate
-  sigma_1.483*median(abs(as.vector(tmp$residuals)))/sqrt(nrow(x))
+  sigma<-1.483*median(abs(as.vector(tmp$residuals)))/sqrt(nrow(x))
   c(tmp$overall + tmp$col,rep(sigma,ncol(x)))
 }
 

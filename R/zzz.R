@@ -2,7 +2,7 @@
   
 
   ## DEBUG flag
-  ##assign("debug.affy123", T, envir=.GlobalEnv)
+  ##assign("debug.affy123", TRUE, envir=.GlobalEnv)
 
   library.dynam("affy", pkgname, libname)
   require(methods)
