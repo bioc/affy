@@ -23,8 +23,9 @@
 \alias{exprs<-,AffyBatch,ANY-method}
 \alias{se.exprs,AffyBatch-method}
 \alias{se.exprs<-,AffyBatch-method}
+\alias{featureNames,AffyBatch-method}
+\alias{featureNames<-,AffyBatch-method}
 \alias{geneNames,AffyBatch-method}
-\alias{geneNames<-,AffyBatch,ANY-method}
 \alias{geneNames<-,AffyBatch,ANY-method}
 \alias{getCdfInfo,AffyBatch-method}
 \alias{image,AffyBatch-method}
@@ -59,7 +60,7 @@
 \title{Class AffyBatch}
 \description{This is a class representation for Affymetrix GeneChip probe
   level data. The main component are the intensities from multiple
-  arrays of the same \code{CDF} type. It extends \code{\link[Biobase]{exprSet-class}}.}
+  arrays of the same \code{CDF} type. It extends \code{\link[Biobase:class.eSet]{eSet}}.}
 \section{Objects from the Class}{
   Objects can be created using the function \code{\link{read.affybatch}}
   or the wrapper \code{\link{ReadAffy}}.
@@ -73,14 +74,12 @@
       the physical number of rows in the arrays.}
     \item{\code{ncol}:}{Object of class \code{"numeric"} representing
       the physical number of columns in the arrays.}
-    \item{\code{exprs}:}{Object of class "matrix" inherited from
-      \code{exprSet}. The matrix contains one probe per row and one chip
+    \item{\code{exprs}:}{Object of class "matrix". The matrix contains one probe per row and one chip
     per column.}
-    \item{\code{se.exprs}:}{Object of class "matrix" inherited from \code{exprSet}.}
-    \item{\code{phenoData}:}{Object of class "phenoData" inherited from
-      \code{exprSet}.}
+    \item{\code{se.exprs}:}{Object of class "matrix".}
+    \item{\code{phenoData}:}{Object of class "AnnotatedDataFrame".}
     \item{\code{annotation}}{A character string identifying the
-      annotation that may be used for the \code{exprSet} instance.}
+      annotation that may be used for the \code{eSet} instance.}
     \item{\code{description}:}{Object of class "MIAME". For
       compatibility with previous version of this class description can
       also be a "character". The class \code{characterOrMIAME} has been
@@ -90,7 +89,7 @@
   }
 }
 \section{Extends}{
-Class \code{"exprSet"}, directly.
+Class \code{"eSet"}, directly.
 }
 \section{Methods}{
   \describe{
@@ -125,10 +124,12 @@ Class \code{"exprSet"}, directly.
      \item{computeExprSet}{\code{signature(x = "AffyBatch",
 	summary.method = "character")}: For each probe set computes an
       expression value using \code{summary.method}. }
-    \item{geneNames}{\code{signature(object = "AffyBatch")}: return the
+    \item{featureNames}{\code{signature(object = "AffyBatch")}: return the
       probe set names also referred to as the Affymetrix IDs. Notice
-      that one can not assign geneNames. You must do this by changing
+      that one can not assign \code{featureNames}. You must do this by changing
       the cdfenvs.}
+    \item{geneNames}{\code{signature(object="AffyBatch'")}: deprecated,
+      use \code{featureNames}}
     \item{getCdfInfo}{\code{signature(object = "AffyBatch")}: retrieve
       the environment that defines the location of probes by probe set. }
     \item{image}{\code{signature(x = "AffyBatch")}: creates an image for
@@ -187,9 +188,8 @@ Class \code{"exprSet"}, directly.
 }
 \note{This class is better described in the vignette.}
 \seealso{  related methods \code{\link{merge.AffyBatch}},
-  \code{\link{pairs.AffyBatch}}, and related classes \code{\link[affy:Cel-class]{Cel}},
-  \code{\link[affy:Cdf-class]{Cdf}} and 
-  \code{\link[Biobase]{exprSet-class}}} 
+  \code{\link{pairs.AffyBatch}}, and
+  \code{\link[Biobase:class.eSet]{eSet}}} 
 
 \examples{
 ## load example
@@ -210,7 +210,7 @@ intensity(affybatch.example)[mypmindex, ]
 
 ## load bigger example (try 'help(Dilution)' )
 data(affybatch.example)
-description(affybatch.example) ##we can also use the methods of exprSet
+description(affybatch.example) ##we can also use the methods of eSet
 sampleNames(affybatch.example)
 abstract(affybatch.example)
 }
