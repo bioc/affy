@@ -103,7 +103,7 @@ function is kept so that people can look at the R code (instead of C)
   The \code{mas5calls} method for \code{AffyBatch} returns an
   \code{ExpressionSet} with calls accessible with \code{exprs(obj)}
   and p-values available with \code{assayData(obj)[["se.exprs"]]}. The
-  code{mas5calls} for \code{ProbeSet} returns a list with vectors of calls
+  code\code{mas5calls} for \code{ProbeSet} returns a list with vectors of calls
   and pvalues.
 }
 
@@ -126,8 +126,9 @@ whitepaper.
 }
 \author{Crispin Miller, Benjamin I. P. Rubinstein, Rafael A. Irizarry}
 \examples{
-
-data(Dilution)
-PACalls <- mas5calls(Dilution)
+if (require(affydata)) {
+  data(Dilution)
+  PACalls <- mas5calls(Dilution)
+}
 }
 \keyword{manip}
