@@ -82,8 +82,8 @@
  **               verbage when running rma
  ** Feb 25, 2003 - try to reduce or eliminate compiler warnings (from gcc -Wall) 
  ** Apr 4, 2003 - fix up so that the number of probes in a probeset is allowed to be more dynamic
- ** Dec 9, 2003 - fix a bug in do_RMA (max_nrows in Calloc)
- ** Mar 6, 2004 - all mallocs/frees are now Calloc/Frees. Removed
+ ** Dec 9, 2003 - fix a bug in do_RMA (max_nrows in R_Calloc)
+ ** Mar 6, 2004 - all mallocs/frees are now R_Calloc/Frees. Removed
  **               the function R_median_polish
  ** Jul 27, 2004 - fix a small memory leak
  ** Aug 4, 2004 - move the "Background correcting" message. 
